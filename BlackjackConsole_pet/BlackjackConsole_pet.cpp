@@ -15,7 +15,7 @@ bool selectOption();
 void drawCardPlayer(std::string& pCards, int& pPoints);
 bool drawCardDealer(std::string& dCards, int& dPoints, int pPoints);
 bool isAceInCards(std::string& cards);
-void gameLose(int why, int money);
+void gameLose(int why, float money);
 bool ynLoop();
 
 
@@ -153,7 +153,7 @@ bool isAceInCards(std::string& cards) {
 
 }
 
-void gameLose(int why, int money) {
+void gameLose(int why, float money) {
     std::cout << "\n\nYou lost this hand because ";
     switch (why) {
     case(1):
@@ -229,7 +229,9 @@ int main()
     float money = 1000;
     std::string dCards = "", pCards = "";
     
-    
+    std::cout << "Welcome to Vovka1759 BlackJack.\n";
+    system("pause");
+
 
     while (gameFlag)
     {
