@@ -7,15 +7,18 @@ bool gameFlag = true;
 
 char getRandomCard();
 int cardToPoint(char card);
-int askBid(int& money);
-void newGame(int& money, int& dPoints, int& pPoints, int& bid, std::string& dCards, std::string& pCards);
+int askBid(float& money);
+void newGame(float& money, int& dPoints, int& pPoints, int& bid, std::string& dCards, std::string& pCards);
 void writeCards(std::string dCards, std::string pCards, int bid);
-void gameLoop(int& money, int& dPoints, int& pPoints, int& bid, std::string& dCards, std::string& pCards);
+void gameLoop(float& money, int& dPoints, int& pPoints, int& bid, std::string& dCards, std::string& pCards);
 bool selectOption();
 void drawCardPlayer(std::string& pCards, int& pPoints);
+bool drawCardDealer(std::string& dCards, int& dPoints, int pPoints);
 bool isAceInCards(std::string& cards);
-void gameLose(int why);
+void gameLose(int why, int money);
 bool ynLoop();
+
+
 
 char getRandomCard() {
     char cards[12] = { '2', '3', '4', '5', '6', '7', '8', '9', 'J', 'Q', 'K', 'A' };
@@ -37,25 +40,32 @@ int cardToPoint(char card) {
     }
 }
 
-int askBid(int& money) {
+int askBid(float& money) {
     system("CLS");
     std::cout << "You have " << money << "$ on your account.\n" << "Enter your bid: ";
     while (true)
     {
+        std::string text_bid;
         int new_bid;
-        std::cin >> new_bid;
-        if (!(new_bid > money)) {
-            money = money - new_bid;
-            return new_bid;
-        }
-        else {
-            std::cout << "You have entered more, than you have on your account. Try one more time: ";
+        while (true) {
+            std::cin >> text_bid;
+            new_bid = atoi(text_bid.c_str());
+            if (new_bid != 0 and !(new_bid > money)) {
+                money = money - new_bid;
+                return new_bid;
+            }
+            else if (new_bid == 0 ) {
+                std::cout << "You didn't enter a number! Try one more time: ";
+            }
+            else {
+                std::cout << "You have entered more, than you have on your account. Try one more time: ";
+            }
         }
     }
 
 }
 
-void newGame(int& money, int &dPoints, int& pPoints, int& bid, std::string& dCards, std::string& pCards) {
+void newGame(float& money, int &dPoints, int& pPoints, int& bid, std::string& dCards, std::string& pCards) {
     dCards = "";
     pCards = "";
 
@@ -107,6 +117,28 @@ void drawCardPlayer(std::string& pCards, int& pPoints) {
     }
 }
 
+bool drawCardDealer(std::string& dCards, int& dPoints, int pPoints)
+{
+    std::size_t place = dCards.find("#");
+    dCards.replace(place, 1, "");
+    while (dPoints <= pPoints and dPoints <= 21) {
+        char new_dCard = getRandomCard();
+        dCards.push_back(new_dCard);
+        dPoints = dPoints + cardToPoint(new_dCard);
+        if (pPoints > 21 and isAceInCards(dCards)) {
+            pPoints = pPoints - 10;
+        }
+    }
+
+    if (dPoints <= 21) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+    
+}
+
 bool isAceInCards(std::string& cards) {
 
     std::size_t place = cards.find("A");
@@ -121,21 +153,20 @@ bool isAceInCards(std::string& cards) {
 
 }
 
-void gameLose(int why) {
+void gameLose(int why, int money) {
     std::cout << "\n\nYou lost this hand because ";
     switch (why) {
     case(1):
         std::cout << "you are out of points!\n";
         break;
-
+    case(2):
+        std::cout << "the dealer has more points than you!\n";
+        break;
     default:
         std::cout << "idk why!\n";
     }
 
-    std::cout << "Do you want to start a new game? [y/n]:";
-    if (!ynLoop()) {
-        gameFlag = false;
-    }
+    std::cout << "Now you have " << money << "$ on your account!";
         
 }
 
@@ -152,12 +183,12 @@ bool ynLoop()
             return false;
         }
         else {
-            std::cout << "You wrote wrong option. Try again [y/n]:";
+            std::cout << "You wrote wrong option. Try again [y/n]: ";
         }
     }
 }
 
-void gameLoop(int& money, int& dPoints, int& pPoints, int& bid, std::string& dCards, std::string& pCards) {
+void gameLoop(float& money, int& dPoints, int& pPoints, int& bid, std::string& dCards, std::string& pCards) {
     writeCards1(dCards, pCards, bid, dPoints, pPoints);
 
     while (true)
@@ -166,16 +197,27 @@ void gameLoop(int& money, int& dPoints, int& pPoints, int& bid, std::string& dCa
             drawCardPlayer(pCards, pPoints);
             writeCards1(dCards, pCards, bid, dPoints, pPoints);
             if (pPoints>21) {
-                gameLose(1);
+                gameLose(1, money);
                 break;
             }
         }
         else {
+            if (drawCardDealer(dCards, dPoints, pPoints)) {
+                gameLose(2, money);
+            }
+            else {
+                money = money + (float)bid * 1.5f;
+            }
+            writeCards1(dCards, pCards, bid, dPoints, pPoints);
+            std::cout << "\nYou won this hand! Now you have " << money << "$ on your account!";
             break;
         }
     }
     
-    
+    std::cout << "\nDo you want to start a new game? [y/n]:";
+    if (!ynLoop()) {
+        gameFlag = false;
+    }
     std::cout << "GGWP";
     std::cin.get();
 }
@@ -183,7 +225,8 @@ int main()
 {
     SetConsoleOutputCP(CP_UTF8); 
 
-    int dPoints = 0, pPoints = 0, bid = 0, money = 1000;
+    int dPoints = 0, pPoints = 0, bid = 0;
+    float money = 1000;
     std::string dCards = "", pCards = "";
     
     
