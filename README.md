@@ -1,4 +1,4 @@
-![Blackjack_pet](https://github.com/Vovka1759/Blackjack_pet/blob/master/image.png)
+![Blackjack_pet](https://github.com/Vovka1759/BlackjackConsole_pet/blob/master/image.png)
 
 This is a little Pet Project.
 
