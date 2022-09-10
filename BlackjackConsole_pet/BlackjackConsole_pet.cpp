@@ -27,6 +27,7 @@ int main()
     {
         int num = getRandomCard();
         std::cout << cards[num]<< " " << cardToPoint(cards[num]);
+
         std::cin.get();
     }
     
