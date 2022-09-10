@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include <random>
+#include <string>
 #include <windows.h>
 
 bool gameFlag = true;
@@ -218,7 +219,6 @@ void gameLoop(float& money, int& dPoints, int& pPoints, int& bid, std::string& d
     if (!ynLoop()) {
         gameFlag = false;
     }
-    std::cout << "GGWP";
     std::cin.get();
 }
 int main()
@@ -228,8 +228,9 @@ int main()
     int dPoints = 0, pPoints = 0, bid = 0;
     float money = 1000;
     std::string dCards = "", pCards = "";
-    
-    
+    std::cout << "Welcome to Vovka1759 BlackJack.\nTo start playing press Enter!";
+    std::string temp;
+    std::cin >> temp;
 
     while (gameFlag)
     {
