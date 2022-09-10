@@ -111,7 +111,7 @@ bool isAceInCards(std::string& cards) {
 
     std::size_t place = cards.find("A");
     if (place != std::string::npos) {
-        cards.replace(place, 1, "А");
+        cards.replace(place, 1, u8"А");
         return true;
     }
     else {
@@ -181,9 +181,7 @@ void gameLoop(int& money, int& dPoints, int& pPoints, int& bid, std::string& dCa
 }
 int main()
 {
-    setlocale(LC_ALL, "Russian");
-    SetConsoleCP(CP_UTF8);
-    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleOutputCP(CP_UTF8); 
 
     int dPoints = 0, pPoints = 0, bid = 0, money = 1000;
     std::string dCards = "", pCards = "";
