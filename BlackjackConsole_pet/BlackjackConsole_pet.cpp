@@ -85,6 +85,10 @@ void newGame(float& money, int &dPoints, int& pPoints, int& bid, std::string& dC
     pCards.push_back(new_pCard1);
     pCards.push_back(new_pCard2);
     pPoints = cardToPoint(new_pCard1) + cardToPoint(new_pCard2);
+    if (pPoints == 22) {
+        pPoints = 2;
+    }
+
 
     bid = askBid(money);;
 
